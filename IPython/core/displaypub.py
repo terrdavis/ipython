@@ -24,9 +24,10 @@ from traitlets import List
 # This used to be defined here - it is imported for backwards compatibility
 from .display import publish_display_data
 
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Main payload class
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+
 
 class DisplayPublisher(Configurable):
     """A traited class that publishes display data to frontends.
@@ -47,13 +48,22 @@ class DisplayPublisher(Configurable):
         """
 
         if not isinstance(data, dict):
-            raise TypeError('data must be a dict, got: %r' % data)
+            raise TypeError("data must be a dict, got: %r" % data)
         if metadata is not None:
             if not isinstance(metadata, dict):
-                raise TypeError('metadata must be a dict, got: %r' % data)
+                raise TypeError("metadata must be a dict, got: %r" % data)
 
     # use * to indicate transient, update are keyword-only
-    def publish(self, data, metadata=None, source=None, *, transient=None, update=False, **kwargs):
+    def publish(
+        self,
+        data,
+        metadata=None,
+        source=None,
+        *,
+        transient=None,
+        update=False,
+        **kwargs
+    ):
         """Publish data and metadata to all frontends.
 
         See the ``display_data`` message in the messaging documentation for
@@ -99,24 +109,33 @@ class DisplayPublisher(Configurable):
         """
 
         # The default is to simply write the plain text data using sys.stdout.
-        if 'text/plain' in data:
-            print(data['text/plain'])
+        if "text/plain" in data:
+            print(data["text/plain"])
 
     def clear_output(self, wait=False):
         """Clear the output of the cell receiving output."""
-        print('\033[2K\r', end='')
+        print("\033[2K\r", end="")
         sys.stdout.flush()
-        print('\033[2K\r', end='')
+        print("\033[2K\r", end="")
         sys.stderr.flush()
 
 
 class CapturingDisplayPublisher(DisplayPublisher):
     """A DisplayPublisher that stores"""
+
     outputs = List()
 
-    def publish(self, data, metadata=None, source=None, *, transient=None, update=False):
-        self.outputs.append({'data':data, 'metadata':metadata,
-                             'transient':transient, 'update':update})
+    def publish(
+        self, data, metadata=None, source=None, *, transient=None, update=False
+    ):
+        self.outputs.append(
+            {
+                "data": data,
+                "metadata": metadata,
+                "transient": transient,
+                "update": update,
+            }
+        )
 
     def clear_output(self, wait=False):
         super(CapturingDisplayPublisher, self).clear_output(wait)

@@ -9,6 +9,7 @@ from IPython.core.splitinput import LineInfo
 from IPython.core.prefilter import AutocallChecker
 from IPython.utils import py3compat
 
+
 def doctest_autocall():
     """
     In [1]: def f1(a,b,c):

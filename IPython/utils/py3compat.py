@@ -13,12 +13,15 @@ import platform
 
 from .encoding import DEFAULT_ENCODING
 
+
 def no_code(x, encoding=None):
     return x
+
 
 def decode(s, encoding=None):
     encoding = encoding or DEFAULT_ENCODING
     return s.decode(encoding, "replace")
+
 
 def encode(u, encoding=None):
     encoding = encoding or DEFAULT_ENCODING
@@ -30,16 +33,19 @@ def cast_unicode(s, encoding=None):
         return decode(s, encoding)
     return s
 
+
 def cast_bytes(s, encoding=None):
     if not isinstance(s, bytes):
         return encode(s, encoding)
     return s
+
 
 def buffer_to_bytes(buf):
     """Cast a buffer object to bytes"""
     if not isinstance(buf, bytes):
         buf = bytes(buf)
     return buf
+
 
 def _modify_str_or_docstring(str_change_func):
     @functools.wraps(str_change_func)
@@ -59,7 +65,9 @@ def _modify_str_or_docstring(str_change_func):
             func.__doc__ = doc
             return func
         return doc
+
     return wrapper
+
 
 def safe_unicode(e):
     """unicode(e) with various fallbacks. Used for exceptions, which may not be
@@ -80,7 +88,8 @@ def safe_unicode(e):
     except UnicodeError:
         pass
 
-    return u'Unrecoverably corrupt evalue'
+    return u"Unrecoverably corrupt evalue"
+
 
 # shutil.which from Python 3.4
 def _shutil_which(cmd, mode=os.F_OK | os.X_OK, path=None):
@@ -98,8 +107,7 @@ def _shutil_which(cmd, mode=os.F_OK | os.X_OK, path=None):
     # Additionally check that `file` is not a directory, as on Windows
     # directories pass the os.access check.
     def _access_check(fn, mode):
-        return (os.path.exists(fn) and os.access(fn, mode)
-                and not os.path.isdir(fn))
+        return os.path.exists(fn) and os.access(fn, mode) and not os.path.isdir(fn)
 
     # If we're given a path with a directory part, look it up directly rather
     # than referring to PATH directories. This includes checking relative to the
@@ -146,12 +154,14 @@ def _shutil_which(cmd, mode=os.F_OK | os.X_OK, path=None):
                     return name
     return None
 
+
 PY3 = True
 
 # keep reference to builtin_mod because the kernel overrides that value
 # to forward requests to a frontend.
-def input(prompt=''):
+def input(prompt=""):
     return builtin_mod.input(prompt)
+
 
 builtin_mod_name = "builtins"
 import builtins as builtin_mod
@@ -169,29 +179,44 @@ unicode_type = str
 
 which = shutil.which
 
+
 def isidentifier(s, dotted=False):
     if dotted:
         return all(isidentifier(a) for a in s.split("."))
     return s.isidentifier()
 
+
 xrange = range
-def iteritems(d): return iter(d.items())
-def itervalues(d): return iter(d.values())
+
+
+def iteritems(d):
+    return iter(d.items())
+
+
+def itervalues(d):
+    return iter(d.values())
+
+
 getcwd = os.getcwd
 
 MethodType = types.MethodType
 
+
 def execfile(fname, glob, loc=None, compiler=None):
     loc = loc if (loc is not None) else glob
-    with open(fname, 'rb') as f:
+    with open(fname, "rb") as f:
         compiler = compiler or compile
-        exec(compiler(f.read(), fname, 'exec'), glob, loc)
+        exec(compiler(f.read(), fname, "exec"), glob, loc)
+
 
 # Refactor print statements in doctests.
 _print_statement_re = re.compile(r"\bprint (?P<expr>.*)$", re.MULTILINE)
+
+
 def _print_statement_sub(match):
-    expr = match.groups('expr')
+    expr = match.groups("expr")
     return "print(%s)" % expr
+
 
 # Abstract u'abc' syntax:
 @_modify_str_or_docstring
@@ -199,7 +224,8 @@ def u_format(s):
     """"{u}'abc'" --> "'abc'" (Python 3)
 
     Accepts a string or a function, so it can be used as a decorator."""
-    return s.format(u='')
+    return s.format(u="")
+
 
 def get_closure(f):
     """Get a function's closure attribute"""
@@ -213,14 +239,16 @@ PYPY = platform.python_implementation() == "PyPy"
 def annotate(**kwargs):
     """Python 3 compatible function annotation for Python 2."""
     if not kwargs:
-        raise ValueError('annotations must be provided as keyword arguments')
+        raise ValueError("annotations must be provided as keyword arguments")
+
     def dec(f):
-        if hasattr(f, '__annotations__'):
+        if hasattr(f, "__annotations__"):
             for k, v in kwargs.items():
                 f.__annotations__[k] = v
         else:
             f.__annotations__ = kwargs
         return f
+
     return dec
 
 
@@ -244,6 +272,7 @@ def annotate(**kwargs):
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 
 def with_metaclass(meta, *bases):
     """Create a base class with a metaclass."""
